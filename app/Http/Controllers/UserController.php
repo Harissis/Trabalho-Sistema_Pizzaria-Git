@@ -51,22 +51,17 @@ class UserController extends Controller
         ];
     }
 
-    /*
-      Update the specified resource in storage.
-     Esse método lida com a atualização de um usuário. Primeiro, tenta encontrar o usuário pelo ID.
-     Se não achar, retorna um erro dizendo que o usuário não foi encontrado.
-     Se encontrar, ele atualiza o usuário com os dados recebidos e devolve uma resposta dizendo que deu tudo certo.
+    /**
+     * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        // Encontrar o usuário pelo ID
         $user = User::find($id);
 
         if (!$user) {
             return response()->json(['error' => 'Usuário não encontrado'], 404);
         }
 
-        // Atualizar os dados do usuário
         $user->update($request->all());
 
         return response()->json([
@@ -76,21 +71,17 @@ class UserController extends Controller
         ]);
     }
 
-    /*
-     Remove the specified resource from storage.
-     Esse método cuida de deletar um usuário. Tenta achar o usuário pelo ID e, se não achar, retorna um erro.
-     Se achar, deleta o usuário e manda uma resposta dizendo que deu tudo certo.
+    /**
+     * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        // Encontrar o usuário pelo ID
         $user = User::find($id);
 
         if (!$user) {
             return response()->json(['error' => 'Usuário não encontrado'], 404);
         }
 
-        // Deletar o usuário
         $user->delete();
 
         return response()->json([
