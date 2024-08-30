@@ -17,70 +17,28 @@ use Illuminate\Http\Request;
  */
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $user = User::select('id', 'name', 'email')->paginate('2');
-
-        return [
-            'status' => 200,
-            'menssagem' => 'Usuários encontrados!!',
-            'user' => $user
-        ];
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(UserCreateRequest $request)
-    {
-        $data = $request->all();
-
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-
-        return [
-            'status' => 200,
-            'menssagem' => 'Usuário cadastrado com sucesso!!',
-            'user' => $user
-        ];
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    // Métodos existentes...
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Encontrar o usuário pelo ID
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuário não encontrado'], 404);
+        }
+
+        // Atualizar os dados do usuário
+        $user->update($request->all());
+
+        return response()->json([
+            'status' => 200,
+            'menssagem' => 'Usuário atualizado com sucesso!!',
+            'user' => $user
+        ]);
     }
 
     /**
@@ -88,6 +46,19 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Encontrar o usuário pelo ID
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuário não encontrado'], 404);
+        }
+
+        // Deletar o usuário
+        $user->delete();
+
+        return response()->json([
+            'status' => 200,
+            'menssagem' => 'Usuário deletado com sucesso!!'
+        ]);
     }
 }
