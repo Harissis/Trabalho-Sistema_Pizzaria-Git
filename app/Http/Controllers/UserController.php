@@ -52,41 +52,53 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $user = User::find($id);
+ * Update the specified resource in storage.
+ */
+public function update(UserUpdateRequest $request, string $id)
+{
+    $user = User::find($id);
 
-        if (!$user) {
-            return response()->json(['error' => 'Usuário não encontrado'], 404);
-        }
-
-        $user->update($request->all());
-
+    if (is_null($user)) {
         return response()->json([
-            'status' => 200,
-            'menssagem' => 'Usuário atualizado com sucesso!!',
-            'user' => $user
+            'status' => 404,
+            'mensagem' => 'Desculpe, não conseguimos encontrar o usuário para atualização.',
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $user = User::find($id);
+    // Atualiza o usuário com os dados recebidos
+    $user->update($request->only(['name', 'email', 'password']));
 
-        if (!$user) {
-            return response()->json(['error' => 'Usuário não encontrado'], 404);
-        }
+    return response()->json([
+        'status' => 200,
+        'mensagem' => 'Atualização concluída! O usuário está atualizado.',
+        'user' => $user
+    ]);
+}
 
-        $user->delete();
+/**
+ * Remove the specified resource from storage.
+ */
+public function destroy(string $id)
+{
+    $user = User::find($id);
 
+    if (is_null($user)) {
         return response()->json([
-            'status' => 200,
-            'menssagem' => 'Usuário deletado com sucesso!!'
+            'status' => 404,
+            'mensagem' => 'Não conseguimos encontrar o usuário para remoção.',
         ]);
     }
+
+    // Deleta o usuário
+    if ($user->delete()) {
+        return response()->json([
+            'status' => 200,
+            'mensagem' => 'Usuário removido com sucesso! Até a próxima!',
+        ]);
+    }
+
+    return response()->json([
+        'status' => 500,
+        'mensagem' => 'Algo deu errado ao tentar remover o usuário. Tente novamente.',
+    ]);
 }
